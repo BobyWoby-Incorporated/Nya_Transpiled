@@ -133,12 +133,23 @@ std::string transpile(std::vector<Token> tokens) {
 	return output;
 }
 
-int main() {
-	std::string test = "intywinty main pouncesOnU pouncesOff noticesBulgyWulgy rawr 0 uwu looksAway";
-	std::vector<Token> toks = tokenize(test);
+int main(int argc, char *argv[]) {
+	std::string filepath = argv[1];
+	std::ifstream file(filepath);
+	std::string input = "";
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filepath << std::endl;
+		return 1;
+	}
+
+	std::string line;
+	while (std::getline(file, line)) {
+		input += line;
+	}
+	
+	std::vector<Token> toks = tokenize(input);
 	std::string out = transpile(toks);
 	std::cout << out << std::endl;
-
 
 	return 0;
 }
