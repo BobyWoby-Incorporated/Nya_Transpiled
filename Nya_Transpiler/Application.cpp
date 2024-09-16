@@ -2,6 +2,9 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <cstdlib>
+//#include <Windows.h>
+
 
 // Token types
 enum TokenType {
@@ -135,6 +138,12 @@ std::string transpile(std::vector<Token> tokens) {
 
 int main(int argc, char *argv[]) {
 	std::string filepath = argv[1];
+	size_t extension = filepath.find(".nya");
+	if (extension == std::string::npos || extension != filepath.length() - 4) {
+		std::cerr << "Invalid File Extension" << std::endl;
+		return 1;
+	}
+
 	std::ifstream file(filepath);
 	std::string input = "";
 	if (!file.is_open()) {
@@ -149,7 +158,10 @@ int main(int argc, char *argv[]) {
 	
 	std::vector<Token> toks = tokenize(input);
 	std::string out = transpile(toks);
-	std::cout << out << std::endl;
-
+	std::ofstream write("nya.cpp");
+	write << out;
+	std::string cmd = "g++ nya.cpp";
+	int returnCode = system("g++ nya.cpp");
+	//ShellExecuteA(NULL, "open", "g++", "nya.cpp", NULL, SW_SHOWDEFAULT);
 	return 0;
 }
